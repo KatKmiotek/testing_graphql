@@ -37,13 +37,44 @@ describe('testing teas endpoint with chai graphql assertions', ()=> {
       .set("Accept", "application/json")
       .expect(200)
       .end((err, res) => {
-        // res will be valid graphql response
         if (err) return done(err);
-        console.log('by name ', res.body.data.teas[0]);
         expect(res.body).to.be.a('object')
-        // assert.graphQLSubset(res.body.data.teas[0])
-        // assert.notGraphQLError(res.body.data.teas[0])
+        expect(res.body.data.teas).to.have.lengthOf(1);
       done()
+      })
+    })
+
+    it('should return an empty array when no data is found', done => {
+      request
+      .post("/")
+      .send({
+        query: '{ teas(name: "Lemonnn Balm") { id, name} }',
+      })
+      .set("Accept", "application/json")
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.body).to.be.a('object')
+        expect(res.body.data.teas).to.have.lengthOf(0);
+      done()
+      })
+    })
+    it('should list all property of return Tea object', done => {
+      request
+      .post("/")
+      .send({
+        query: '{ teas(name: "Lemon Balm") { id, name, description, price} }',
+      })
+      .set("Accept", "application/json")
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.body).to.be.a('object')
+        expect(res.body.data.teas[0]).to.have.property('id')
+        expect(res.body.data.teas[0]).to.have.property('name')
+        expect(res.body.data.teas[0]).to.have.property('description')
+        expect(res.body.data.teas[0]).to.have.property('price')
+        done()
       })
     })
 })
