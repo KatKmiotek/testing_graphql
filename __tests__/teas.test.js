@@ -14,7 +14,6 @@ describe('Testing teas query', () => {
       .end(function (err, res) {
         if (err) return done(err);
         expect(res.body).toBeInstanceOf(Object)
-        // console.log('response', res);
         done();
       })
   })
@@ -30,7 +29,6 @@ describe('Testing teas query', () => {
         if (err) return done(err);
         expect(res.statusCode).toBe(400)
         expect(res.clientError)
-        console.log('response', res.body);
         done();
       })
   })
