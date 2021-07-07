@@ -82,13 +82,15 @@ describe('testing teas endpoint with chai graphql assertions', ()=> {
       request
       .post("/")
       .send({
-        query: `mutation { addTea(teaInput: { name: "Breakfast Tea", description: "Intensive falvour", price: ${teaPrice}, producerId: "60e569889ef12a00084fb979" }){ id name price} }`
+        query: `mutation { addTea(teaInput: { name: "Breakfast Tea", description: "Intensive falvour", price: ${teaPrice}, producerId: "60e569889ef12a00084fb979" }){ name price} }`
       })
       .set("Accept", "application/json")
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
         expect(res.body.data.addTea.price).to.equal(teaPrice);
+        // console.log('response', res.body.data);
+        assert.graphQL(res.body)
         done()
       })
     })
