@@ -11,8 +11,9 @@ const expect = chai.expect
 
 //test data
 
-const teaName = "Lemon Balm"
+const teaName = "Original"
 const teaPrice = 0.99
+const teaID = "60e5f1c1ec9b5f0008746b1e"
 
 describe('testing teas endpoint with chai graphql assertions', ()=> {
     it('should query data from teas endpoint', done =>{
@@ -64,7 +65,7 @@ describe('testing teas endpoint with chai graphql assertions', ()=> {
       request
       .post("/")
       .send({
-        query: '{ teas(name: "Lemon Balm") { id, name, description, price} }',
+        query: `{ teas(name: "${teaName}") { id, name, description, price} }`,
       })
       .set("Accept", "application/json")
       .expect(200)
@@ -78,7 +79,7 @@ describe('testing teas endpoint with chai graphql assertions', ()=> {
         done()
       })
     })
-    it('should be able to add new tea (mutation example)', done => {
+    it.skip('should be able to add new tea (mutation example)', done => {
       request
       .post("/")
       .send({
@@ -89,7 +90,20 @@ describe('testing teas endpoint with chai graphql assertions', ()=> {
       .end((err, res) => {
         if (err) return done(err);
         expect(res.body.data.addTea.price).to.equal(teaPrice);
-        // console.log('response', res.body.data);
+        assert.graphQL(res.body)
+        done()
+      })
+    })
+    it.skip('should be able to delete a tea', done => {
+      request
+      .post("/")
+      .send({
+        query: `mutation { deleteTea(id: "${teaID}") }`
+      })
+      .set("Accept", "application/json")
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
         assert.graphQL(res.body)
         done()
       })
